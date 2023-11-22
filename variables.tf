@@ -13,3 +13,18 @@ variable "region-worker" {
   type    = string
   default = "us-west-2"
 }
+
+variable "external_ip" {
+  type        = string
+  default     = "0.0.0.0/0"
+  description = "External IP"
+}
+
+variable "instance_type" {
+  type    = string
+  default = "t2.micro"
+}
+variable "workers-count" {
+  type    = number
+  default = 1
+}
