@@ -35,8 +35,8 @@ resource "aws_instance" "jenkins-master" {
 
   provisioner "local-exec" {
     command = <<EOF
-aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-master} --instance-ids ${self.id}
-ansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/jenkins-master-sample.yml
+aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-master} --instance-ids ${self.id} \
+&& ansible-playbook --private-key ./ssh-keys/cg_tf_generated_key --extra-vars 'passed_in_hosts=${aws_instance.jenkins-master.public_ip}' ansible_templates/jenkins-master-sample.yml
 EOF
   }
 }
@@ -52,7 +52,7 @@ resource "aws_instance" "jenkins-worker-oregon" {
   provider                    = aws.region-worker
   count                       = var.workers-count
   ami                         = data.aws_ssm_parameter.linuxAmiWorker.value
-  instance_type               = var.instance_type
+  instance_type               = "t3.micro"
   key_name                    = aws_key_pair.worker-key.key_name
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.jenkins-worker-sg.id]
@@ -66,8 +66,8 @@ resource "aws_instance" "jenkins-worker-oregon" {
 
   provisioner "local-exec" {
     command = <<EOF
-aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-worker} --instance-ids ${self.id}
-ansible-playbook --extra-vars 'passed_in_hosts=tag_Name_${self.tags.Name}' ansible_templates/jenkins-worker-sample.yml
+aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-worker} --instance-ids ${self.id} \
+&& ansible-playbook --private-key ./ssh-keys/cg_tf_generated_key --extra-vars 'passed_in_hosts=${self.public_ip}' ansible_templates/jenkins-worker-sample.yml
 EOF
   }
 }

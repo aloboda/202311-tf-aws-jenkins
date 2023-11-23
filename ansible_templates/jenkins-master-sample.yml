@@ -9,3 +9,12 @@
       yum:
         name: git
         state: present
+    - name: install httpd
+      yum:
+        name: httpd
+        state: present
+    - name: Start Apache
+      service:
+        name: httpd
+        state: started
+        enabled: yes

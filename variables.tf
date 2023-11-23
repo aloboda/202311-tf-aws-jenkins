@@ -28,3 +28,7 @@ variable "workers-count" {
   type    = number
   default = 1
 }
+variable "app-port" {
+  type    = number
+  default = 80
+}

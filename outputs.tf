@@ -18,3 +18,7 @@ output "worker-ips" {
     ins.id => ins.public_ip
   }
 }
+
+output "lb-dns-name" {
+  value = aws_lb.app_lb.dns_name
+}
